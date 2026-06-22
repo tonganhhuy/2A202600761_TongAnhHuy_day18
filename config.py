@@ -7,6 +7,21 @@ load_dotenv()
 
 # --- API Keys ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+
+# Determine which API key and provider parameters to use
+LLM_API_KEY = OPENAI_API_KEY or GEMINI_API_KEY or GOOGLE_API_KEY
+
+is_gemini = False
+if GEMINI_API_KEY or GOOGLE_API_KEY or OPENAI_API_KEY.startswith("AIzaSy"):
+    is_gemini = True
+    LLM_API_KEY = GEMINI_API_KEY or GOOGLE_API_KEY or OPENAI_API_KEY
+    LLM_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+    LLM_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+else:
+    LLM_BASE_URL = None
+    LLM_MODEL = "gpt-4o-mini"
 
 # --- Qdrant ---
 QDRANT_HOST = "localhost"
